@@ -45,7 +45,16 @@ impl AppSetting {
         let setting = {
             let file = File::open(&config_file).context("設定ファイルの取得に失敗しました")?;
             let reader = BufReader::new(&file);
-            let setting: AppSetting = serde_json::from_reader(reader)?;
+            let setting: AppSetting = match serde_json::from_reader(reader) {
+                Ok(setting) => setting,
+                Err(error) => {
+                    println!(
+                        "設定ファイルの読み取りに失敗しました: {:#?}",
+                        error.to_string()
+                    );
+                    AppSetting::default()
+                }
+            };
             setting
         };
         Ok(Mutex::new(setting))
