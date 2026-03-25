@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use tauri::App;
 use tauri::Manager;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AppSetting {
-    theme: String,
+    pub theme: String,
 }
 
 impl Default for AppSetting {
