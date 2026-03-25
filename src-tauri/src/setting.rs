@@ -10,13 +10,19 @@ use tauri::App;
 use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct AppSetting;
+pub struct AppSetting {
+    theme: String,
+}
+
+impl Default for AppSetting {
+    fn default() -> Self {
+        Self {
+            theme: String::from("light"),
+        }
+    }
+}
 
 impl AppSetting {
-    pub fn new() -> Self {
-        Self {}
-    }
-
     pub fn init(app: &App) -> Result<Mutex<AppSetting>, Box<dyn std::error::Error>> {
         let data_dir = app
             .path()
@@ -29,7 +35,7 @@ impl AppSetting {
         let config_file = data_dir.join("app_config.json");
         if !config_file.exists() {
             let file = File::create(&config_file).context("設定ファイルの作成に失敗しました")?;
-            let setting = AppSetting::new();
+            let setting = AppSetting::default();
 
             let writer = BufWriter::new(file);
             serde_json::to_writer_pretty(writer, &setting)
